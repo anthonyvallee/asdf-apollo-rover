@@ -35,14 +35,15 @@ list_all_versions() {
 get_arch() {
   local arch=$(uname -m)
   case $arch in
-    amd64 | x86_64)
-      echo "x86_64"
-      ;;
-    arm64)
-      echo "aarch64"
-      ;;
-    *)
-      echo ""
+  amd64 | x86_64)
+    echo "x86_64"
+    ;;
+  arm64)
+    echo "aarch64"
+    ;;
+  *)
+    echo ""
+    ;;
   esac
 }
 
