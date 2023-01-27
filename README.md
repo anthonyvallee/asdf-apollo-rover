@@ -3,7 +3,7 @@
 # asdf-apollo-rover [![Build](https://github.com/anthonyvallee/asdf-apollo-rover/actions/workflows/build.yml/badge.svg)](https://github.com/anthonyvallee/asdf-apollo-rover/actions/workflows/build.yml) [![Lint](https://github.com/anthonyvallee/asdf-apollo-rover/actions/workflows/lint.yml/badge.svg)](https://github.com/anthonyvallee/asdf-apollo-rover/actions/workflows/lint.yml)
 
 
-[apollo-rover](https://www.apollographql.com/docs/rover/) plugin for the [asdf version manager](https://asdf-vm.com).
+[Apollo Rover](https://www.apollographql.com/docs/rover/) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -16,10 +16,7 @@
 
 # Dependencies
 
-**TODO: adapt this section**
-
 - `bash`, `curl`, `tar`: generic POSIX utilities.
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
 
