@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for apollo-rover.
 GH_REPO="https://github.com/apollographql/rover"
 TOOL_NAME="apollo-rover"
 TOOL_TEST="rover --version"
@@ -14,7 +13,6 @@ fail() {
 
 curl_opts=(-fsSL)
 
-# NOTE: You might want to remove this if apollo-rover is not hosted on GitHub releases.
 if [ -n "${GITHUB_API_TOKEN:-}" ]; then
   curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN")
 fi
@@ -31,20 +29,50 @@ list_github_tags() {
 }
 
 list_all_versions() {
-  # TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-  # Change this function if apollo-rover has other means of determining installable versions.
   list_github_tags
 }
 
+get_arch() {
+  local arch=$(uname -m)
+  case $arch in
+    amd64 | x86_64)
+      echo "x86_64"
+      ;;
+    arm64)
+      echo "aarch64"
+      ;;
+    *)
+      echo ""
+  esac
+}
+
+get_platform() {
+  [ "Linux" = "$(uname)" ] && echo "unknown-linux-gnu" || echo "apple-darwin"
+}
+
 download_release() {
-  local version filename url
+  local version filename arch platform archive url
   version="$1"
   filename="$2"
 
-  # TODO: Adapt the release URL convention for apollo-rover
-  url="$GH_REPO/archive/v${version}.tar.gz"
+  arch=$(get_arch)
+  if [ -z "$arch" ]; then
+    fail "Unsupported architecture: $arch"
+  fi
+  echo "Detected architecture: $arch"
+
+  platform=$(get_platform)
+  if [ -z "$platform" ]; then
+    fail "Unsupported platform: $platform"
+  fi
+  echo "Detected platform: $platform"
+
+  archive="rover-v${version}-${arch}-${platform}.tar.gz"
+  url="$GH_REPO/releases/download/v${version}/${archive}"
 
   echo "* Downloading $TOOL_NAME release $version..."
+  echo "* Fetching release asset ${archive} on GitHub..."
+
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
@@ -61,7 +89,6 @@ install_version() {
     mkdir -p "$install_path"
     cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-    # TODO: Assert apollo-rover executable exists.
     local tool_cmd
     tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
     test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
